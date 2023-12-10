@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://www.googlefonts.cn//css?family=Calibri:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"grampart.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="论文阅读笔记：Nature文章&quot;A draft human pangenome reference&quot;。该文章是人类泛基因组联盟对外公布的第一个参考泛基因组，论文涵盖了该泛基因组构造前进行基因组装的过程和评估、构造泛基因组并评估和基于泛基因组进行的一系列相关研究的结果。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="人类参考泛基因组草案">
+<meta property="og:url" content="https://grampart.github.io/2023/12/05/reading_Draft%20Human%20Pangenome%20Reference/index.html">
+<meta property="og:site_name" content="Gramprt">
+<meta property="og:description" content="论文阅读笔记：Nature文章&quot;A draft human pangenome reference&quot;。该文章是人类泛基因组联盟对外公布的第一个参考泛基因组，论文涵盖了该泛基因组构造前进行基因组装的过程和评估、构造泛基因组并评估和基于泛基因组进行的一系列相关研究的结果。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://grampart.github.io/image/20231205_reading/image-20231127112756282.png">
+<meta property="og:image" content="https://grampart.github.io/image/20231205_reading/image-20231127113805500.png">
+<meta property="og:image" content="https://grampart.github.io/image/20231205_reading/image-20231128162313639.png">
+<meta property="og:image" content="https://grampart.github.io/image/20231205_reading/image-20231128155516370.png">
+<meta property="og:image" content="https://grampart.github.io/image/20231205_reading/image-20231129145618806.png">
+<meta property="og:image" content="https://grampart.github.io/image/20231205_reading/image-20231130095007981.png">
+<meta property="og:image" content="https://grampart.github.io/image/20231205_reading/image-20231130162347062.png">
+<meta property="article:published_time" content="2023-12-05T00:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-10T08:15:26.134Z">
+<meta property="article:author" content="Grampart">
+<meta property="article:tag" content="bioinformatics">
+<meta property="article:tag" content="pangenome">
+<meta property="article:tag" content="minigraph">
+<meta property="article:tag" content="cactus">
+<meta property="article:tag" content="PGGB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://grampart.github.io/image/20231205_reading/image-20231127112756282.png">
+
+<link rel="canonical" href="https://grampart.github.io/2023/12/05/reading_Draft%20Human%20Pangenome%20Reference/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>人类参考泛基因组草案 | Gramprt</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Gramprt</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">姑妄听之，如是我闻</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">2</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://grampart.github.io/2023/12/05/reading_Draft%20Human%20Pangenome%20Reference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Grampart">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gramprt">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          人类参考泛基因组草案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-05 08:00:00" itemprop="dateCreated datePublished" datetime="2023-12-05T08:00:00+08:00">2023-12-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-12-10 16:15:26" itemprop="dateModified" datetime="2023-12-10T16:15:26+08:00">2023-12-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/%E7%94%9F%E7%89%A9%E4%BF%A1%E6%81%AF/" itemprop="url" rel="index"><span itemprop="name">生物信息</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>50 分钟</span>
+            </span>
+            <div class="post-description">论文阅读笔记：Nature文章<i>"A draft human pangenome reference"</i>。该文章是人类泛基因组联盟对外公布的第一个参考泛基因组，论文涵盖了该泛基因组构造前进行基因组装的过程和评估、构造泛基因组并评估和基于泛基因组进行的一系列相关研究的结果。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>文献来源：W.-W. Liao <em>et al.</em>, “A draft human pangenome reference,” <em>Nature</em>, vol. 617, no. 7960, pp. 312–324, May 2023, doi: <a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-05896-x">10.1038/s41586-023-05896-x</a>.</p>
+</blockquote>
+<h1 id="主要作者信息">主要作者信息</h1>
+<h2 id="共同一作">共同一作</h2>
+<ul>
+<li>Wen-Wei Liao：美国华盛顿大学医学院(博士研究生)、耶鲁大学医学院(Research Affiliate)</li>
+<li>Mobin Asri：美国加州大学基因组研究所</li>
+<li>Jana Ebler：德国Heinrich-Heine大学医学院生物信息研究所</li>
+</ul>
+<h2 id="共同通讯">共同通讯</h2>
+<ul>
+<li>Erik Garrison：田纳西大学健康科学中心
+<ul>
+<li>实现了VG系列工具（一作）</li>
+<li>在变异检测等方面有相关文章工作</li>
+</ul>
+</li>
+<li>Tobias Marschall：德国Heinrich-Heine大学医学院生物信息研究所</li>
+<li>Ira M.Hall：耶鲁大学医学院
+<ul>
+<li>基因比较、结构变异发现的概率框架等</li>
+</ul>
+</li>
+<li>Li Heng
+<ul>
+<li>各类比对算法、工具等(mini系列、yak、Dipcall等)</li>
+</ul>
+</li>
+<li>Benedict Paten：美国加州大学基因组研究所
+<ul>
+<li>Cactus系列算法</li>
+<li>实现了VG系列工具（通讯）</li>
+<li>泛基因组计划的主要提出和研究者</li>
+</ul>
+</li>
+</ul>
+<h1 id="背景">背景</h1>
+<h2 id="补充知识">补充知识</h2>
+<h3 id="基因定相-genotype-phasing-：">基因定相(<em>Genotype Phasing</em>)：</h3>
+<p>将多倍体上的等位基因，按照亲本定位到对应染色体，来自一个亲本的基因都在同一条染色体上。</p>
+<ul>
+<li>单倍型(<em>Haplotype</em>)：指生物体的一条染色体上，来自于某一单亲的一组紧密相连的等位基因序列</li>
+<li>基因型(<em>Genotype</em>)：指的是一个生物体内的DNA所包含的基因，双亲获得的全部基因的总和<br>
+<img src="/image/20231205_reading/image-20231127112756282.png" alt="image-20231127112756282" style="zoom: 33%;" /></li>
+</ul>
+<h3 id="组装的各个阶段">组装的各个阶段</h3>
+<p>由短到长为<em>read, contig, scaffold</em></p>
+<img src="/image/20231205_reading/image-20231127113805500.png" alt="image-20231127113805500" style="zoom:67%;" />
+<ul>
+<li>直接测序得到的数据是<em>read</em>；通过<em>read</em>之间的重叠，拼接起来的是<em>contig</em>；进过各种手段（例如光学图谱、Hi-C等），确定contig是否处于统一染色体并确定顺序，填补成<em>scaffold</em>。</li>
+<li>N(L)50/90：将contig或者scaffold按照长度排序，累加。当累加长度为总长度的50%/90%时候的scaffold或者contig的长度(数目)。该数字越大(小)说明组装质量越好。</li>
+<li>NG、LG：总长度改为参考基因序列的长度。</li>
+</ul>
+<h2 id="参考基因组的发展">参考基因组的发展</h2>
+<h3 id="grch">GRCh</h3>
+<ul>
+<li>人类基因组计划(<em>Human Genome Project, HGP</em>)</li>
+<li>使用单倍型的一种镶嵌表示（多个人的基因拼接在一起）。每个染色体使用一条scaffold序列来表示。</li>
+<li>GRCh38版本还存在151Mb的gap区域、59Mb的计算模拟区域。这部分占总长度的6.7%。</li>
+</ul>
+<h3 id="t2t-chm13">T2T-CHM13</h3>
+<ul>
+<li>1000基因组计划(<em>1000 Genomes Project, 1KG</em>)</li>
+<li>首个单倍体人类基因组的完整序列，端到端的组装。使用了CHM13细胞系。</li>
+<li>相比GRCh38，发现了更多的单核苷酸多态(<em>single-nucleotide polymorphisms, SNPs</em>)，拷贝数变异(<em>copy number variants, CNVs</em>)的表现更显真实。</li>
+</ul>
+<blockquote>
+<p>单核苷酸多态(<em>single-nucleotide</em> <em>polymorphisms,</em> <em>SNPs</em>)：同一物种不同个体基因组DNA的等位序列上单个核苷酸存在差别的现象。<br>
+拷贝数变异(<em>copy</em> <em>number variants,</em> <em>CNVs</em>)：一种基因组结构变化类型。起因于染色体上较大DNA片段的删除(拷贝数低于正常值)或复制(拷贝数高于正常值)。</p>
+</blockquote>
+<h3 id="hprc的提出背景">HPRC的提出背景</h3>
+<ul>
+<li>先前的参考基因组中遗漏了很多结构变异(<em>structural variant, SV</em>)</li>
+<li>泛基因组已经被提出用于解决参考偏差(<em>reference bias</em>)</li>
+</ul>
+<h2 id="人类泛基因组草案">人类泛基因组草案</h2>
+<p>HRPC其中一个小组的目标是对350个个体的700个单倍型构建了一个人类泛基因组。目前已经完成了其中一个子集，首次发布了一个人类泛基因组。</p>
+<h1 id="47个人类的基因组装">47个人类的基因组装</h1>
+<h2 id="数据信息和来源">数据信息和来源</h2>
+<ul>
+<li>29个由HPRC的长读测序产生的数据，18个由其他工作测序产生的数据。</li>
+<li>29个HPRC数据来自1KG，淋巴母细胞系、核型正常、低传代。这些数据的父母双方都有全测序的数据。</li>
+<li>除了HG002外的测序深度平均为39.7xHiFi，HG002测序深度为130x，N50长度为19.6kbp。</li>
+<li>组装采用了<code>Trio-Hifiasm</code><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>，数据使用<code>Pacbio HiFi</code>长读数据，其亲本数据使用<code>Illumina</code>获取的短读。
+<ul>
+<li>去除了衔接子和非人类序列污染</li>
+<li>保证每个母本具有线粒体组装</li>
+</ul>
+</li>
+</ul>
+<h2 id="对组装的评估">对组装的评估</h2>
+<h3 id="评估方法-methods">评估方法（Methods）</h3>
+<p>寻找大规模的复制错误、定相错误、染色体连接错误，对于每个组装的完整性、连续性、基准质量、定相精度进行了评估。</p>
+<ul>
+<li>进行染色体连接测量：<code>minigraph</code></li>
+<li>contig级别组装评估：<code>QUAST</code></li>
+<li>QV评估：<code>yak</code><sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>、<code>Meryl and Merqury</code></li>
+<li>基因定相的准确度：<code>yak</code><sup class="footnote-ref"><a href="#fn2" id="fnref2:1">[2:1]</a></sup>、<code>Pstools</code><sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup></li>
+</ul>
+<h4 id="测量染色体间连接">测量染色体间连接</h4>
+<ul>
+<li>使用Minigraph工具将contig和CHM13对齐：<code>minigraph -cxasm chm13v2.0.fa contigs.fa | paftools.js misjoin –</code></li>
+<li>如果有1个contig和两个染色体超过1Mb比对上，则认为这两个染色体之间进行了连接</li>
+</ul>
+<h4 id="评估contig质量">评估contig质量</h4>
+<ul>
+<li>使用工具<code>QUAST</code>，统计组装、contig等的相关长度、NG50等数据</li>
+</ul>
+<h4 id="评估qv">评估QV</h4>
+<ul>
+<li>使用<code>yak</code><sup class="footnote-ref"><a href="#fn2" id="fnref2:2">[2:2]</a></sup>生成kmer(<code>yak count </code>)，然后使用<code>yak</code><sup class="footnote-ref"><a href="#fn2" id="fnref2:3">[2:3]</a></sup>计算QV(<code>yak qv</code>)</li>
+</ul>
+<h4 id="计算定相误差">计算定相误差</h4>
+<ul>
+<li>使用<code>yak</code><sup class="footnote-ref"><a href="#fn2" id="fnref2:4">[2:4]</a></sup> (<code>yak trioeval</code>)</li>
+</ul>
+<h4 id="评估概述">评估概述</h4>
+<ul>
+<li>手动方法修复了3个大规模的复制错误、1个大的定相错误。较小的错误和SV之间的差别很难区分</li>
+<li>对于217个推断的染色体连接，其中1个是错误组装，位于常染色体区域、非近端着丝染色体。其余的位于近端着丝染色体的短臂部分，可能由于各种生物因素导致这些部分大规模同源。</li>
+</ul>
+<blockquote>
+<p>近端着丝染色体(<em>acrocentric chromosome</em>)：着丝粒位于接近染色体臂端部的染色体。其染色体短臂（近端）末端常带有随体。</p>
+<ul>
+<li>短臂一般使用<em>p</em>表示(<em>petit</em>)，由于<em>q</em>和<em>p</em>类似，<em>q</em>多用于代指长臂。</li>
+</ul>
+<p>近中着丝粒染色体、亚中着丝粒染色体(<em>submetacentric chromosome</em>)：着丝粒的位置介于中部和端部之间的染色体。</p>
+<p>中着丝粒染色体、等臂染色体(<em>metacentric chromosome</em>)：着丝粒位于或靠近染色体中央的染色体，即长臂和短臂相等或接近相等的染色体。</p>
+<p>卫星DNA、随体(<em>satellite</em>)：位于近端着丝粒染色体短臂远端的圆形或圆柱形的染色体片段。</p>
+<ul>
+<li>通常是高度串联重复的 DNA，不具有常染色质的功能活性，长度一般2bp到几百bp</li>
+<li>可以根据密度梯度沉降平衡技术(物理方法)分离。按照它们的浮力密度不同，人的卫星DNA被分为多种。(离心时候看起来这部分像是卫星一样围着DNA主条带)</li>
+<li>微卫星DNA(<em>microsatellite DNA</em>)：长度2bp到几十bp左右，又称<em>STR(short tandem repeats)</em></li>
+<li>迷你卫星DNA(<em>minisatellite DNA</em>)：长度在几百左右bp，又称作<em>VNTR(variable number tandem repeats)</em></li>
+</ul>
+</blockquote>
+<h3 id="评估结果">评估结果</h3>
+<ul>
+<li>X、Y染色体长度存在区别：与T2T-CHM13比较，X染色体长度覆盖了99.3%(3.04/3.06 Gb)；Y染色体长度为2.93Gb。</li>
+<li>比对质量：以GRCh38为参考，NG50为56Mb，Yak评估的QV为53.57(即平均227509bp出现1bp错误)</li>
+</ul>
+<blockquote>
+<p><em>Quality Value(QV)</em>：用于量化评估该碱基的可信度，由序列分析程序根据该碱基的峰形计算得出，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mi>V</mi><mo>=</mo><mo>−</mo><mn>10</mn><mi>lg</mi><mo>⁡</mo><mo fence="false">(</mo><mfrac><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi><mtext> </mtext><mi mathvariant="normal">o</mi><mi mathvariant="normal">f</mi><mtext> </mtext><mi mathvariant="normal">v</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">s</mi></mrow><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi><mo>&gt;</mo><mn>3</mn><mi mathvariant="normal">x</mi></mrow></mfrac><mo fence="false">)</mo></mrow><annotation encoding="application/x-tex">QV = -10\lg\Big(\frac{\mathrm{length\ of \ variants}}{\mathrm{bases &gt; 3x}}\Big)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">Q</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.80002em;vertical-align:-0.65002em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mord">0</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">l<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="delimsizing size2">(</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322159999999999em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">b</span><span class="mord mathrm mtight">a</span><span class="mord mathrm mtight">s</span><span class="mord mathrm mtight">e</span><span class="mord mathrm mtight">s</span><span class="mrel mtight">&gt;</span><span class="mord mathrm mtight">3</span><span class="mord mathrm mtight">x</span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.446108em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">l</span><span class="mord mathrm mtight">e</span><span class="mord mathrm mtight">n</span><span class="mord mathrm mtight" style="margin-right:0.01389em;">g</span><span class="mord mathrm mtight">t</span><span class="mord mathrm mtight">h</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathrm mtight">o</span><span class="mord mathrm mtight" style="margin-right:0.07778em;">f</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathrm mtight" style="margin-right:0.01389em;">v</span><span class="mord mathrm mtight">a</span><span class="mord mathrm mtight">r</span><span class="mord mathrm mtight">i</span><span class="mord mathrm mtight">a</span><span class="mord mathrm mtight">n</span><span class="mord mathrm mtight">t</span><span class="mord mathrm mtight">s</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.37237em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="delimsizing size2">)</span></span></span></span></span>，该公式来自<sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup>论文，该数字越大误差越低。</p>
+</blockquote>
+<ul>
+<li>使用Yak分析的定相准确性：平均的单倍型switch错误率为0.67%，Hamming错误率为0.79%</li>
+</ul>
+<blockquote>
+<p><em>switch error</em>：基因型相位分析的结果之一，表示基因型的相位关系发生错误的频率。（定相后，有多少部分是把来自父母染色体的部分搞反了。）<br>
+<em>hamming error</em>：表示相位结果与真实相位之间不匹配的碱基数目。（和正确的相比，总共有多少字符是错误的。）</p>
+</blockquote>
+<h2 id="区域组装可靠性">区域组装可靠性</h2>
+<h3 id="flagger方法设计-methods">Flagger方法设计（Methods）</h3>
+<p>开发了配套的管道工具Flagger，用于检测错误。Flagger通过以下五个步骤，会根据测序深度构造拟合模型来对每个区域进行各类错误的检测。<br>
+<img src="/image/20231205_reading/image-20231128162313639.png" alt="image-20231128162313639" style="zoom:67%;" /></p>
+<ul>
+<li><strong>Step1：</strong> 计算被覆盖的测序深度
+<ul>
+<li>使用<code>samtools depth</code>工具，获得<code>.dep</code>文件</li>
+<li>使用自行开发的<code>depth2cov</code>程序转换格式，获得<code>.cov</code>文件</li>
+</ul>
+</li>
+<li><strong>Step2：</strong> 应用混合模型
+<ul>
+<li>首先对每个覆盖部分的深度的频率进行计数，使用程序<code>cov2counts</code>计算覆盖深度和其对应的频率，获得<code>.count</code>文件。</li>
+<li>使用拟合高斯模型(程序<code>fit_gemm.py</code>)，输入为<code>.count</code>文件。使用最大期望来找最佳参数。该模型具有四个部分：
+<ul>
+<li>错误(<em>Erroneous</em>)：泊松分布，覆盖深度&lt;10，均值为0-10之间，表示非常低的read支持的区域。</li>
+<li>(假)重复(<em>(Falsely) duplicated</em>)：高斯分布建模，均值为单倍体部分的50%，表示错误的重复区域。</li>
+<li>单倍体(<em>haploid</em>)：高斯分布建模，期望的没有错误的部分。</li>
+<li>坍缩(<em>Collapsed</em>)：实际上是一组区域，每个都遵循高斯分布，均值为单倍体的倍数，在这些复制中被压缩成为一个区域。</li>
+</ul>
+</li>
+<li>为了对局部更加敏感，将一个二倍体分为长度为5-10Mb的窗口，为每个窗口拟合不同模型。对于较短的序列，直接进行整个基因组的分析。</li>
+</ul>
+</li>
+<li><strong>Step 3：</strong> 根据建立的高斯混合模型，将覆盖度进行分类。分配的原则是选择概率最高的类别。<img src="/image/20231205_reading/image-20231128155516370.png" alt="image-20231128155516370"></li>
+<li><strong>Step 4：</strong> 将一些高频的卫星DNA纳入考虑。
+<ul>
+<li>通过contig和T2T-CHM13、GRCh38进行比较，将三类卫星序列HSat1/2/3分别进行标记，调整其对应的覆盖度，映射到每个组装上面。</li>
+</ul>
+</li>
+<li><strong>Setp 5：</strong> 使用高质量数据校正。
+<ul>
+<li>对于某许虚假的重复区域，可能是部分单倍体，可能是极低映射质量(MAPQ)部分。</li>
+<li>对于MAPQ&gt;20的比对生成了新的覆盖度文件，当原先的重复区域出现5个在MAPQ&gt;20的比对时，该部分被标记为单倍体区域。<br>
+Flagger评估中，T2T-CHM13可能有0.41%的不可靠区域。</li>
+</ul>
+</li>
+</ul>
+<h3 id="评估结果">评估结果</h3>
+<ul>
+<li>对于每个组装而言，平均0.88%(26.4Mb)是不可靠的。其中估计大约有0.09%(54.6kb N50平均)的可靠部分被标记为不可靠了。</li>
+<li>对于人类的高度重复区域，组装后的可靠部分：大约95.4%的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span></span></span></span>卫星，91.5%r人类1/2号卫星，97.7%的片段重复(<em>segmental duplications, SDs</em>)，94.3%的VNTRs，94.2%的STRs。</li>
+</ul>
+<h2 id="组装的完整性和cnv">组装的完整性和CNV</h2>
+<h3 id="评估方法">评估方法</h3>
+<p>对于Repeat masking使用<code>RepeatMasker</code>工具</p>
+<p>对于SD(<em>segmental duplications</em>)使用<code>sedef</code>工具</p>
+<h3 id="评估结果">评估结果</h3>
+<p>为了评估组装的完备性和CNV的多态性，将组装数据和T2T-CHM13进行了对比。</p>
+<ul>
+<li>男性样本来自父亲的染色体中92.8%在CHM13中一次比对上（除去X染色体）。对于其他的组装（除去Y染色体），94.1%一次比对上。</li>
+<li>大约4.4%未必对上（136Mb），这些部分90%位于着丝粒或其周围。</li>
+<li>90%的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span></span></span></span>卫星区域、<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi></mrow><annotation encoding="application/x-tex">\gamma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.05556em;">γ</span></span></span></span>卫星区域、着丝粒区域至少被一个组装覆盖。</li>
+<li>排除T2T-CHM13的着丝粒和为卫星区域，平均有99.12%的基因被一次比对精准覆盖。</li>
+</ul>
+<p>在T2T-CHM13比对中，大约1%（32.4Mb）比对了2次，大约0.6%（20Mb）比对上超过2次。</p>
+<ul>
+<li>82.2%和在着丝粒或者其周围的重复区域重合；39.82%和SDs区域重合，94.62%和这两者之一重合。</li>
+<li>在比对到T2T-CHM13中，大概2.5%的SDs区域（4.99Mb/199Mb）在flagger评估中被认为是错误。
+<ul>
+<li>错误的SDs比对长度中位数是正确的3倍（288kb/96.3kb)</li>
+<li>错误的SDs比对中，比正确的比对中更加同源(98.9%/97.1%)</li>
+</ul>
+</li>
+</ul>
+<h1 id="对47个基因组进行数据标注">对47个基因组进行数据标注</h1>
+<h2 id="ensembl工具设计-methods">Ensembl工具设计（Methods）</h2>
+<h3 id="目的">目的</h3>
+<p>创建高置信度的注释，使基因和基因簇能够准确地映射到 HPRC 组装中。</p>
+<h3 id="整体步骤">整体步骤</h3>
+<p>从GENCODE中选择了一组基因，将其比对到HPRC上面</p>
+<ul>
+<li>GENCODE：GENCODE是一个基于生物学证据识别和分类人类和小鼠基因组中基因特征的项目。该项目是GRCh38参考染色体中的基因。</li>
+<li>排除了readthrough基因、位于patches上的基因等，对于X/Y染色体上的PAR区域仅保留一个。</li>
+</ul>
+<blockquote>
+<p>连读(<em>readthrough</em>)：又称作”通读“，越过终止密码子而进行的转录或翻译。readthrough 基因中的一些机制使得翻译可以越过终止密码子进行，从而产生超长蛋白质。<br>
+拟常染色体区域(<em>pseudo-autosomal region, PAR</em>)：XY上仍然保持着同源的一部分区域</p>
+</blockquote>
+<h4 id="在参考序列中对基因簇分类">在参考序列中对基因簇分类</h4>
+<ul>
+<li>使用100kb的长度跳跃窗口对GRCh38划分基因簇。</li>
+<li>初始从 <em>5’</em> 端第一个基因开始，所有在窗口中完全重叠或部分重叠的基因被分为一个簇。</li>
+<li>向 <em>3’</em> 端下一个基因开始创建下一个窗口。</li>
+<li>对于没有与其他基因重叠的基因，直接以该基因的最 <em>5’</em> 位置和最 <em>3’</em> 位置为基础确定映射区域。</li>
+</ul>
+<h4 id="在grch38中每个基因簇创建锚点">在GRCh38中每个基因簇创建锚点</h4>
+<ul>
+<li>选择两个锚点，分别位于该区域的 5’ 和 3’ 边缘，距离边缘各 5 kb。</li>
+<li>选择一个中心锚点，位于该区域在 GRCh38 基因簇中的中点周围，长度为 10 kb。</li>
+<li>锚点的序列随后使用 minimap2 工具进行了GRCh38基因组到HPRC组装的基因组的映射。</li>
+</ul>
+<h4 id="确定高可信区域">确定高可信区域</h4>
+<ul>
+<li>三个锚点位于同一条序列中，锚点之间共线顺序，序列相似度&gt;=99%，匹配覆盖度&gt;=50%，锚点之间的距离和参考基因类似</li>
+<li>三个锚点找不到合适区域，则会评估成对的锚点。这表明可能是部分匹配的情况。</li>
+</ul>
+<h4 id="对高可信区域进行分析">对高可信区域进行分析</h4>
+<ul>
+<li>从高可信区域，使用MAFFT（一种多序列比对工具）和GRCh38进行比对</li>
+<li>针对每个基因，查找标记对应的外显子。根据外显子重建转录物。</li>
+<li>计算每个转录本和GRCh38中转录物的覆盖度和相似度。</li>
+</ul>
+<h4 id="对转录本进行评估和分析">对转录本进行评估和分析</h4>
+<ul>
+<li>和参考基因组分析的转录本，覆盖度&lt;98%，相似度&lt;99%需要进一步的分析。</li>
+<li>使用minimap2进行比对，启用了Iso-Seq/cDNA转录物高质量数据。</li>
+<li>默认内含子的最大长度为100kb；对于参考基因组中内含子大于100kb的，设置最大内含子长度为最长内含子的1.5倍。</li>
+</ul>
+<h4 id="使用原始参考评估转录物映射质量">使用原始参考评估转录物映射质量</h4>
+<ul>
+<li>原始read的覆盖度&lt;98%，相似度&lt;99%的基因部分需要使用Exonerate重新比对
+<ul>
+<li>Exonerate比Minimap2更慢，但是对于小的外显子具有更好的处理能力。</li>
+</ul>
+</li>
+<li>使用多种方法对转录物映射时，选择最高覆盖度和相似度的映射。</li>
+</ul>
+<h4 id="无法定位的基因">无法定位的基因</h4>
+<p>对于第一次无法使用锚点将基因定位到HPRC组装的部分</p>
+<ul>
+<li>在高质量映射区域重新定位这些基因。高质量映射是指：具有单一映射基因，转录物相似度和覆盖度&gt;99%，该基因附近80%的基因都在参考基因附近(附近指100个最近邻的基因)。</li>
+<li>对该区域，利用5kb的引物序列，使用Minimap2，将目标基因映射到对应基因组上。</li>
+<li>根据映射结果与缺失基因预期所在区域的重叠情况进行过滤。</li>
+</ul>
+<h4 id="减少错误映射">减少错误映射</h4>
+<ul>
+<li>检查所有基因在GRCh38中和组装序列中外显子重叠情况</li>
+<li>两者外显子重叠但是不完全相同，表明出现不确定或者多样性
+<ul>
+<li>根据是否在预期位置、是否在高可信映射区域、平均的相似性和覆盖度、领域基因的情况证实是错误还是冲突</li>
+</ul>
+</li>
+<li>无法确定的冲突区域将均会被保留</li>
+</ul>
+<h2 id="标注整体结果">标注整体结果</h2>
+<p>对于HPRC的组装中，标注的结果：</p>
+<ul>
+<li>被标注的编码蛋白的基因比例的中位数是99.07%(98.08%-99.40%)；编码蛋白的转录物(<em>transcripts</em>)域比例的中位数是99.42%(98.29%-99.66%)。</li>
+<li>非编码基因中位数是98.16%(97.23-98.60%)；非编码转录物中位数是98.96%(97.94-99.28%)。<br>
+对于T2T-CHM13也运行了该工具，和HPRC交叉验证，其中编码蛋白的基因和转录物中位数是99.53%和99.79%。</li>
+</ul>
+<blockquote>
+<p>转录组(<em>transcriptome</em>)：存在于细胞、组织或生物体中的全套RNA。包括mRNA和非编码RNA。<br>
+转录物(<em>transcript</em>)：由DNA模板转录最初产生的RNA分子，含有外显子和内含子；通过转录和（或）进一步加工所产生的RNA序列。又称“转录本”。<br>
+转录(<em>transcription</em>)：遗传信息从基因转移到RNA的过程。包括转录起始、延伸、终止等过程。</p>
+</blockquote>
+<h2 id="碱基级结果">碱基级结果</h2>
+<h3 id="方法设计-methods">方法设计（Methods）</h3>
+<h4 id="移码变异">移码变异</h4>
+<ul>
+<li>遍历每个转录本的编码序列。通过碱基级别的一一比较</li>
+<li>变异（插入、删除）碱基数目长度不是3的倍数，&lt;30bp（排除内含子的情况，内含子一般&gt;30bp）</li>
+<li>使用BED文件记录</li>
+</ul>
+<h4 id="无义突变">无义突变</h4>
+<ul>
+<li>遍历每个预测转录本的编码序列中的每个密码子。通过分析每个密码子，识别是否存在早期终止密码子。</li>
+<li>如果在规范转录本的末尾的终止密码子之前出现了早期终止密码子，就保存该位置到一个BED文件中。</li>
+</ul>
+<h4 id="使用illumina数据进行验证">使用Illumina数据进行验证</h4>
+<ul>
+<li>将这两种突变的坐标转换到GRCh38上</li>
+<li>使用了来自1000基因组计划的VCF文件。这些VCF文件包含高覆盖率的Illumina样本，其中每个染色体的VCF文件都经过重新校准。</li>
+<li>使用<code>bedtools intersect</code>将转换后的突变坐标与每个基因组装的变异调用文件进行交叉比对</li>
+<li>对每个染色体的VCF文件使用<code>bcftools view</code>进行拆分，使每个样本都位于自己的文件中。</li>
+</ul>
+<h3 id="检测突变的结果">检测突变的结果</h3>
+<p>针对一组规范的转录物(<em>canonical transcript</em>)，研究其转录物中检测到的无义突变(<em>nonsense mutation</em>)和编码突变(<em>frameshift mutation</em>)。</p>
+<blockquote>
+<p>规范的转录物(<em>canonical transcript</em>)：对应某类蛋白的转录物可能有多个，在<code>Matched Annotation from the NCBI and EMBL-EBI</code>数据库中有一类被标记为<em>canonical</em>，该类能够严格对应到某个序列上。<br>
+无义突变(<em>nonsense mutations</em>)：碱基置换使编码某一种氨基酸的密码子变成不编码任何氨基酸的终止密码子（UAA、UAG或UGA）的一种点突变类型。这种变异会引起翻译时多肽链合成延伸的提前终止，肽链长度变短而可能成为没有活性或活性明显改变的截短蛋白。<br>
+移码突变(<em>frameshift mutation</em>)：在DNA分子中单个或多个碱基对插入或者删除，导致翻译阅读框(reading frame)的改变。通常导致产生与正常蛋白质结构和功能相差很大的、完全不同的蛋白质。</p>
+</blockquote>
+<ul>
+<li>每个组装中的无义突变/移码突变平均数是25/72</li>
+<li>对于每个组装，无义突变/移码突变得到了独立生成的Illumina变异调用集的支持的中位数是84/80%(21/58)。
+<ul>
+<li>这说明这些突变在不同平台（Illumina和组装）的数据中得到了一定程度的验证，提高了对它们准确性的信心。</li>
+</ul>
+</li>
+<li>这些检测到的无义突变和移码突变的数量落在以前报道的人体基因组中的损失性突变的范围内，该范围通常在每个个体约为10到150之间。</li>
+<li>如果将未经验证的移码突变和无义突变全部视为组装错误，这将导致每个转录组（每1.7Mb）预测出18个改变转录本的错误。</li>
+</ul>
+<h2 id="检测拷贝数变异">检测拷贝数变异</h2>
+<ul>
+<li>根据Flagger的预测结果，1115个蛋白质编码基因家族在至少一个组装中出现了拷贝数增多。</li>
+<li>平均每个组装有36个基因的拷贝数增加。该数目比GRCh38增多了。</li>
+<li>71%仅仅出现在一对染色体的一条上。</li>
+<li>罕见的CNV一般出现在SDs以外的区域。
+<ul>
+<li>根据CNV出现概率分为单例(仅在一个单倍体上)、低频(&lt;10%)、高频。</li>
+<li>15%(118/771)的单例出现在了GRCh38标记的SDs中。59%(83/140)的低频出现在了SDs，81%(44/54)的高频出现在SDs中。</li>
+</ul>
+</li>
+<li>至少58个基因在至少10%的单倍体中发生了CNV，相较于GRCh38而言，有扩充了16个基因。</li>
+<li>如 GPRIN2 和 SPDYE2，它们展示了基因的拷贝数多态性，并呈现为串联重复的一部分。</li>
+</ul>
+<h1 id="构造泛基因组草案">构造泛基因组草案</h1>
+<h2 id="泛基因组图的结构">泛基因组图的结构</h2>
+<p>使用sequence graph来表示一个泛基因组</p>
+<ul>
+<li>其节点对应了DNA序列，每个节点表示两个方向。两个节点间存在4种可能的链接，反向表示为该序列的碱基互补序列。</li>
+<li>图中可能的一个单倍型序列被表示为<em>walk</em>。</li>
+</ul>
+<p><img src="/image/20231205_reading/image-20231129145618806.png" alt="image-20231129145618806"><br>
+构造的工具为：Minigraph<sup class="footnote-ref"><a href="#fn5" id="fnref5">[5]</a></sup>、Minigraph-Cactus<sup class="footnote-ref"><a href="#fn6" id="fnref6">[6]</a></sup>、PanGenome Graph Builder(PGGB)<sup class="footnote-ref"><a href="#fn7" id="fnref7">[7]</a></sup></p>
+<ul>
+<li>三种方法独立验证发现的基因，提供针对基因不同的同源关系看法。</li>
+<li>Minigraph：从参考基因组开始构造泛基因组，通过比对的形式迭代添加新的基因组，仅仅支持&gt;50bp的SVs。包含复杂变异、重复、反演等。</li>
+<li>MC：扩展了Minigraph的泛基因组，使用Cactus在保留Minigraph的结构上，进行了碱基级别的比对。增加了同源关系的说明。</li>
+<li>HPPG：构造了一个全对全的组装，不依赖特定参考。</li>
+</ul>
+<h2 id="构造方法描述-methods">构造方法描述（Methods）</h2>
+<h3 id="minigraph">Minigraph</h3>
+<p>Minigraph是一个能够快速执行基因组到图映射的工具，它使用minimap2算法的一般化版本。通过该工具，可以检测到至少50 bp的新结构变异（SVs）。</p>
+<h4 id="构图步骤">构图步骤</h4>
+<ul>
+<li>选择一个基准组装（GRCh38），将其用作起始图.</li>
+<li>然后采用贪婪的方式对每个额外的组装重复进行映射并添加SV。</li>
+<li>这种迭代的方法类似于部分顺序比对(POA)的思想。</li>
+</ul>
+<p>通过这种方式构建的图描述了样本中的结构变异，并提供了跨参考和所有插入的坐标系统。</p>
+<h3 id="mc">MC</h3>
+<p>MC的目的是进一步完善Minigraph，使其能够包括较小的变异，甚至是SNP。Minigraph构建的图默认只包含SV（≥50 bp）。<br>
+参考序列GRCh38在图中是无环的，其他序列可能存在循环。</p>
+<h4 id="遮蔽卫星区域">遮蔽卫星区域</h4>
+<ul>
+<li>Minigraph无法映射高度重复区域序列，MC将排除这部分区域</li>
+<li>默认参数下使用dna-brnn工具，对所有序列中重复区域进行了剪切。
+<ul>
+<li>dna-brnn是一种工具，使用循环神经网络快速识别<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span></span></span></span>卫星以及人类卫星1和2。</li>
+<li>卫星区域不仅仅包含识别到的三个卫星家族。dna-brnn检测到的Minigraph映射中≥100 kb的间隙也被删除。</li>
+</ul>
+</li>
+<li>平均每个非参考组装删除了188.5Mb区域。</li>
+</ul>
+<h4 id="组装到图映射">组装到图映射</h4>
+<ul>
+<li>与minimap2不同，Minigraph目前不会生成精确的cigar字符串等准确的比对结果。
+<ul>
+<li>CIGAR：表示在比对过程中的操作，如匹配、插入或删除等。
+<ul>
+<li>M表示匹配，I插入，D删除，N/P跳过参考序列，S软跳过，H硬跳过，=完全匹配，X序列错配</li>
+<li>一条150bp长的read比对到基因组之后，假如看到它的CIGAR字符串为：33S117M，其意思是说在比对的时候这条read开头的33bp在被跳过了（S），紧接其后的117bp则比对上了参考序列（M）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>新修改增加了选项 –write-mz，将会在映射时报告minimizer信息(15bp大小的完全匹配)，得到的minimizers以PAF文件存储，对于这部分生成了CIGAR信息。</li>
+<li>排除映射质量较低的映射。</li>
+</ul>
+<h4 id="染色体分解">染色体分解</h4>
+<ul>
+<li>通过将Minigraph图分割为连接的组件，并使用RN标签确定它们对应的染色体名称，实现了映射结果的分割。</li>
+<li>使用PAF（Pairwise Alignment Format）映射来确定每个查询contig与每个染色体组件的覆盖情况。</li>
+<li>利用覆盖情况，将每个查询contig分配给一个染色体，选择覆盖率最大的染色体。
+<ul>
+<li>根据长度和覆盖程度，覆盖度低的部分被丢弃
+<ul>
+<li>[1,10kb), coverage&lt;90%; [10kb,100kb) &lt;80%; [100kb,1Mb), coverage&lt;75%; &gt;1Mb &lt;70%</li>
+</ul>
+</li>
+<li>在基于GRCh38的图中，所有未定位和随机的contigs都被分组到同一分组中。</li>
+</ul>
+</li>
+</ul>
+<h4 id="使用cactus进行碱基级别比对">使用Cactus进行碱基级别比对</h4>
+<ul>
+<li>对Cactus进行了一些修改，以便它可以接受染色体尺度的序列到Minigraph图的映射结果。</li>
+<li>对Cactus的运行时性能进行了改进，通过将其基本比对器替换为abPOA(Partial Order Alignment)来提高在许多序列上的比对效率。</li>
+<li>Cactus的核心算法基本保持不变。它使用成对比对来诱导一个序列图，然后使用Cactus比对过滤算法对其进行过滤，对未比对的序列组件进行基本比对和优化处理。</li>
+<li>最后，通过实施一个转换器（hal2vg），将HAL比对转换成VG格式的序列图。</li>
+</ul>
+<h4 id="后处理">后处理</h4>
+<ul>
+<li>去除长度大于10 kb的未对齐序列，包括那些未与Minigraph对齐的序列。</li>
+<li>使用GFAffix对图进行规范化，通过合并冗余的节点前缀和后缀。为确保参考路径始终访问其正向方向，必要时翻转节点。</li>
+<li>将所有染色体合并成一个整体，使用vg进行索引。</li>
+<li>必要时产生过滤后的图：
+<ul>
+<li>通过使用vg clip -d 9 -m 10000移除由少于9个单体路径经过的所有节点</li>
+<li>使用halMergeChroms将所有染色体的HAL文件合并成一个整体基因组的HAL文件。通过halUnclip添加回被剪切的序列。</li>
+</ul>
+</li>
+</ul>
+<h3 id="pggb">PGGB</h3>
+<p>PGGB使用对称的全对全基因组比较来生成和优化泛基因组。它被应用于构建一个泛基因组图，其中包含所有的基因组组装和参考（包括GRCh38和CHM13）。</p>
+<ul>
+<li>PGGB图是对输入组装的无损模型，表示了所有的等同性。它具有所有泛基因组组装作为参考系统的特性，可以用于全面探索泛基因组变异的范围。PGGB图的结构使得所有泛基因组组装都可以用作参考系统。</li>
+<li>由于在全对全的成对比对中，许多结构变异（SV）热点，包括着丝点，被转换性地折叠成通过表示单个重复拷贝的子图的环。这一特性可能会减小在重复序列中发现的变异的大小。</li>
+<li>相对于MC图，PGGB不过滤快速演化的卫星序列或不可靠的对齐区域。这使得PGGB图相对于MC图更大且更复杂，并引入了相对于Minigraph和MC图而言的大量单体序列。</li>
+</ul>
+<h4 id="比对">比对</h4>
+<ul>
+<li>使用wfmash比对器，对输入序列进行全对全比对。wfmash采用MashMap2的映射算法，以找到指定长度和百分比的同源性。</li>
+<li>使用WFA算法的高阶版本（wflign）推导出基准级别的比对。
+<ul>
+<li>以CHM13和GRCH38作为靶标，保留100kb以上、相似性98%以上的比对</li>
+<li>形成contig，分为25组，22常染色体、XY、线粒体。</li>
+</ul>
+</li>
+</ul>
+<h4 id="图诱导">图诱导</h4>
+<ul>
+<li>使用seqwish，将wfmash生成的输入FASTA序列和PAF格式的比对转换成图形式（GFA格式）。</li>
+<li>无损地将输入比对和序列转换为图形式。</li>
+</ul>
+<h4 id="图归一">图归一</h4>
+<p>应用归一化算法（smoothxg）对图进行简化，以处理短串联重复（STRs）和其他重复序列中出现的复杂模式</p>
+<ul>
+<li>使用路径引导的随机梯度下降方法对图进行排序，以在一维中组织图形以优化路径距离和图距离。</li>
+<li>对排序后的图的每个小片段应用多序列比对算法（abPOA）。
+<ul>
+<li>重复两次，每次选用不同的目标长度</li>
+</ul>
+</li>
+<li>将经过多序列比对处理的小片段重新组合成一个最终的图。</li>
+<li>应用GFAffix来从图的拓扑结构中删除多余的分叉。</li>
+</ul>
+<h2 id="测量泛基因组中的变异">测量泛基因组中的变异</h2>
+<h3 id="总述">总述</h3>
+<p>三种方法即便对于同一条序列，也会构造出不同的的结果：</p>
+<ul>
+<li>Minigraph：仅仅考虑了SV，长度最小，边和节点的数目也是最小的，3.24Gb。</li>
+<li>MC：考虑了更多的小变异，长度为3.29Gb，包含了Minigraph没有对齐的一些序列。</li>
+<li>PGGB：大概5Gb，包含了其他方法所不涉及的卫星区域，并且对于contig没有进行任何的修饰或者过滤。</li>
+</ul>
+<h3 id="高可信区域确定-method">高可信区域确定（Method）</h3>
+<p>使用Dipcall工具生成SV的可信区域。Dipcall通常用于识别小变异，但对于小变异在SV周围的不同表示形式的正确比较，<a target="_blank" rel="noopener" href="http://hap.py/vcfeval%E7%AD%89%E5%BD%93%E5%89%8D%E7%9A%84%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E5%8F%AF%E8%83%BD%E4%B8%8D%E8%B6%B3%E4%BB%A5%E8%83%9C%E4%BB%BB%E3%80%82">hap.py/vcfeval等当前的基准测试工具可能不足以胜任。</a><br>
+对样本进行处理：</p>
+<ul>
+<li>如果在Dipcall BED文件存在中断，则排除每侧侧翼序列+15kb区域中长度超过10kb的SD、自链（self-chain）、串联重复、卫星DNA。
+<ul>
+<li>Dipcall BED文件中的中断通常由于缺失的序列、组装或参考中的错误，或由于我们无法使用现有工具来基准测试这些区域中的小变异而引起。</li>
+</ul>
+</li>
+<li>排除Dipcall BED文件中所有中断周围的每侧+15 kb。</li>
+<li>排除GRCh38中所有gap周围的每侧+15 kb，因为这些区域的对齐是不可靠的。</li>
+<li>排除Dipcall VCF文件中大于49 bp的变异以及与这些SV重叠的任何串联重复每侧+50bp的区域。</li>
+</ul>
+<blockquote>
+<p><em>侧翼序列(flanking sequence)</em>：编码区第一个外显子和最末一个外显子的外侧的一段不被翻译的核苷酸序列</p>
+</blockquote>
+<p>排除那些由于数据缺失、组装或参考错误、大型结构变异或拷贝数变异而导致难以准确基准测试的区域，从而确保在可信区域内进行的变异比较更加准确和可靠。</p>
+<h3 id="变异的数目">变异的数目</h3>
+<p>为了表征泛基因组中的非重叠变异位点的，使用图分解<em>bubble</em>子图。然后将变异位点分为小变异(&lt;50bp)和SVs(&gt;50bp)。</p>
+<ul>
+<li>MC中具有2200万个小变异，PGGB中有2100万个</li>
+<li>MC中具有67000个SV，PGGB中有73000个SV，Minigraph中有75000个。</li>
+</ul>
+<h4 id="统计和测量方法-method">统计和测量方法（Method)</h4>
+<ul>
+<li>Bubble发现
+<ul>
+<li>使用 <code>gfatools bubble</code> 和 <code>vg deconstruct</code> 工具发现三种图中的变异位点</li>
+<li>对于MC和PGGB中&gt;10Mb的虚假的删除，使用了 <code>vcfbub</code> 移除</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>变异分类：小变异&lt;50bp，SV&gt;=50bp</li>
+<li>对变异进行注释：
+<ul>
+<li>Minigraph的注释方法，每个变异点位记录最长的等位基因，存储为FASTA格式</li>
+<li>使用多种工具RepeatMasker、SDUST、ETRF、dna-brnn 和 seqtk gap对等位基因进行注释</li>
+<li>一个位点长度&gt;1000bp，且20%的碱基被注释为基因组中的SD，该位点也被认为是SD</li>
+<li>使用 minimap2 将最长等位基因序列与 GRCh38 参考基因组比对。</li>
+</ul>
+</li>
+<li>结构变异分类：
+<ul>
+<li>使用 <code>mgutils.js anno</code> 工具对结构变异位点进行进一步的分类</li>
+</ul>
+</li>
+</ul>
+<h4 id="对每个可信变异的评估">对每个可信变异的评估</h4>
+<p>使用Dipcall<sup class="footnote-ref"><a href="#fn8" id="fnref8">[8]</a></sup>来确定可信的变异，每个组装的SV和小变异数目相近。</p>
+<ul>
+<li>在MC/PGGB中每个单倍体平均有534/535万个小变异，1.68/1.74万个SV</li>
+<li>在MC/PGGB/Minigraph中，SV中有90/55/86Mb的非参考序列（不包括难对齐区域）
+<ul>
+<li>Alu、L1、ERV SVs一般是双等位基因，VNTRs多是多等位基因</li>
+<li>Alu、L1、ERV和VNTR的MAF是类似的。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><em>Alu</em>：哺乳动物和人基因组中的一种中等重复序列。长约300 bp，在基因组中重复百万次以上，含有限制性内切酶AluⅠ的识别位点，可被Alu内切酶切割。<em>L1</em>、<em>ERV</em>等均是一类序列的名称</p>
+</blockquote>
+<blockquote>
+<p>等位基因频率(<em>allele frequency, AF</em>)：某位点上各个等位基因出现的频率<br>
+次等位基因频率(<em>minor allele frequency, MAF</em>)：该位点上出现频率第二的这个基因的频率</p>
+</blockquote>
+<h3 id="非参考数据的影响">非参考数据的影响</h3>
+<p>量化了44个个体在非参考基因组(GRCh38)中的常染色体对于基因质量的贡献。</p>
+<ul>
+<li>MC和PGGB图，使用常染色体（MC中省略了大部分的异染色体(<em>heterochromatic</em>)）</li>
+</ul>
+<h4 id="分析结果">分析结果</h4>
+<ul>
+<li>MC/PGGB中非参考序列常染色体长度为175/190Mb，其中55/105Mb仅仅在一个单倍型上观察到。</li>
+<li>核心区域(在所有单倍型中出现&gt;=95%)有5/10Mb，常见区域(&gt;5%)有70/60Mb</li>
+<li>按照所有基因组的大小排序依次添加到图中，第二个基因组为泛基因组增加了大约23Mb，最后一个增加的部分约为0.64Mb</li>
+<li>根据Heaps’ Law合理外推，预计最终300个个体的泛基因组会再当前之上添加150Mb。</li>
+</ul>
+<h3 id="小变异等位基因频率整体分析">小变异等位基因频率整体分析</h3>
+<p>对于GIAB(v.3.0)中的<em>easy</em>区域（占GCRh38的74.35%）上的小变异进行了标注，使用gnomAD(v.3.1.2)工具进行了AF的统计。</p>
+<ul>
+<li>MC结果中大约60.2%的小变异的AF约为1%，35.7%的AF小于1%，1.7%的仅在一个个体中存在，2.4%在gnomAD中缺失了。
+<ul>
+<li>确实的部分可能是gnomAD中的假阴性或者是泛基因组中假阳性。</li>
+</ul>
+</li>
+<li>PGGB和MC类似，使用HiFi数据和DeepVariant工具和上述类似</li>
+</ul>
+<h3 id="使用传统方法进行变异调分析泛基因组的质量">使用传统方法进行变异调分析泛基因组的质量</h3>
+<h4 id="方法-method">方法（Method）</h4>
+<ul>
+<li>使用了这些已有的工具：DeepVariant（用于小变异）、PBSV、Sniffles、Iris、SVIM、SVIM-asm、PAV（用于SV，开发的Hall-lab pipeline）对这些组装进行了变异调用。</li>
+<li>使用多种工具，然后使用<code>svtools lmerge</code>将其合并
+<ul>
+<li>第一次合并采取严格形式 svtools lmerge -f 20</li>
+<li>第二次合并采取宽松形式 svtools lmerge -f 100 -w carrier_wt</li>
+</ul>
+</li>
+</ul>
+<h4 id="结果">结果</h4>
+<ul>
+<li>对于小变异和SV来说，使用泛基因组到参考序列进行比较，出现了高度的一致性。MC和PGGB中，call variant的性能很高</li>
+<li>在对于GIAB(v.3.0)中的<em>easy</em>区域，MC对于小变异recall:99.64%，precision:99.64%。在<em>high-confidence</em>区域（常染色体90%）97.91%，96.66%。</li>
+<li>根据插入和删除两类进行分类，MC、PGGB表现出了一致的情况，和参考基因组的数据一致。</li>
+<li>call SV的性能整体要低于小变异</li>
+</ul>
+<h3 id="利用原始测序数据来分析泛基因组的质量">利用原始测序数据来分析泛基因组的质量</h3>
+<h4 id="方法">方法</h4>
+<p>由于现有程序的限制，导致我们设定的真实集合中可能存在一些错误，导致泛基因组的变异调用质量被低估了。</p>
+<h4 id="结果">结果</h4>
+<ul>
+<li>使用GraphAligner来将原始测序的read和MC图对齐。其中HiFi read数据在过滤后有97%以上能够比对到MC中。</li>
+<li>使用计算了图中目标边和非目标边的read深度。
+<ul>
+<li>94%以上的目标边至少有5条read支持。该深度存在两个峰值，一个是杂合区域边缘小峰值，一个是2倍左右的在纯合区域边缘的大峰值。</li>
+<li>非目标边仅有不足7%的边存在5条以上的read。</li>
+</ul>
+</li>
+<li>泛基因组在捕捉变异上更好
+<ul>
+<li>泛基因组中被推定为假阳性的小变异/SV中，有89.3%/85.9%获得了 &gt;=5 HiFi reads，75.3%/73.8%获得了 &gt;= 10 HiFi reads。</li>
+<li>大多数被认为是假阳性的数据实际上是真实的变异。</li>
+</ul>
+</li>
+</ul>
+<h3 id="编码蛋白的注释">编码蛋白的注释</h3>
+<p>使用比较注释工具 <em>Comparative Annotation Toolkit(CAT)</em> 将MC泛基因组使用GENCODE的注释提升到单倍体上。</p>
+<ul>
+<li>CAT提升了99.1%(中位数)的蛋白质编码基因，和Ensembl的结果(99.4%)相当，两者的杰卡德相似度(<em>Jaccard similarities</em>)为0.99。</li>
+</ul>
+<blockquote>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∩</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∪</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">J(A,B)=\frac{|A\cap B|}{|A\cup B|}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.09618em;">J</span><span class="mopen">(</span><span class="mord mathdefault">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.53em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">∣</span><span class="mord mathdefault mtight">A</span><span class="mbin mtight">∪</span><span class="mord mathdefault mtight" style="margin-right:0.05017em;">B</span><span class="mord mtight">∣</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">∣</span><span class="mord mathdefault mtight">A</span><span class="mbin mtight">∩</span><span class="mord mathdefault mtight" style="margin-right:0.05017em;">B</span><span class="mord mtight">∣</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+</blockquote>
+<ul>
+<li>有0.4%的蛋白质编码基因被CAT和Ensembl注释到了不同的基因座上。</li>
+</ul>
+<h2 id="泛基因组表示的复杂基因座">泛基因组表示的复杂基因座</h2>
+<blockquote>
+<p>基因座(<em>locus, loci(pl.)</em>)：一个基因或某些其他的DNA序列在染色体上所处的特定位置。每个基因座用染色体编号数、臂和其在染色体上所处位置表示，如杜兴肌营养不良基因的基因座用Xp21表示。</p>
+</blockquote>
+<h3 id="筛选">筛选</h3>
+<p>通过对Minigraph产生的气泡进行筛选，筛选出复杂SV(<em>Complex SV, CSV</em>），筛选的标准为：</p>
+<ul>
+<li>在组装的单倍型之间具有至少五种结构的等位基因、大于10 kb</li>
+</ul>
+<p>共计在找出了620/76506(0.81%)个CSV，其中44个是和医学相关的蛋白质编码基因。</p>
+<ul>
+<li>44个中有部分是广为人知的CSV，根据short read SV研究所有的这44个基因可以判定是结构变异。</li>
+</ul>
+<p>最终选择5个具有临床意义的CSV作为研究对象（RHD–RHCE，HLA-A，CYP2D6–CYP2D7，C4，LPA）。</p>
+<h3 id="基因跟踪和定位">基因跟踪和定位</h3>
+<ul>
+<li>基于泛基因组确定这些基因在图中的位置，获得基因座。在该子图中标注已知基因的路径。</li>
+<li>通过跟踪单个单倍型，深入了解每个样本中SV位点的具体结构，特别是与已知基因的关联的部分。</li>
+</ul>
+<h3 id="分析结果">分析结果</h3>
+<ul>
+<li>CYP2D6–CYP2D7：和之前发现的单倍型一致，和Cyrius使用Illumina获得的短读数据对76个组装进行变异调用获得的有96%的匹配。
+<ul>
+<li>其中：2个差异可能是Cyrius工作中的错误引起的，1个差异是Flagger揭示的HG01072中的false复制。</li>
+</ul>
+</li>
+<li>C4、LPA：和之前发现的单倍型一致</li>
+<li>RHD-RHCE：除了已知单倍型外，推断出了五个新的单倍型。
+<ul>
+<li>包括RHD的一个复制等位基因和RHD与RHCE之间的一个倒位等位基因，该基因交换了两个基因的最后一个外显子。</li>
+</ul>
+</li>
+<li>HLA-A： 在这一位点附近，发现了两个先前描述缺失的等位基因，新增发现了一个携带HLA-Y假基因的插入等位基因，这在以前的研究中尚未报道。</li>
+</ul>
+<h3 id="mc和pggb的区别">MC和PGGB的区别</h3>
+<ul>
+<li>对MC和PGGB图中的五个位点进行了比较。结果显示，每个图独立地回溯了相同的单倍型结构。这表明两种图形都能够准确地表示这些位点的单倍型。</li>
+<li>在PGGB图中，许多SV被过度地折叠成循环，这可能使在重复序列中发现的变异看起来更小。</li>
+<li>MC图中，每个同源序列都被单独表示，而不是合并成一个环形结构。</li>
+</ul>
+<h1 id="泛基因组应用">泛基因组应用</h1>
+<h2 id="基于泛基因组的短变异发现">基于泛基因组的短变异发现</h2>
+<h3 id="目标">目标</h3>
+<p>减少由于使用GRCh38\CHM13这类单一线性参考基因组造成的参考误差，从而改进下游分析的相关工作。</p>
+<h3 id="研究方法">研究方法</h3>
+<p>针对泛基因组的映射能否提高短读进行变异检测的准确度。</p>
+<ul>
+<li>使用Giraffe将GIAB基准测试的短读和MC Pangenome对齐，比较对象为实用BWA-MEM和GRCh38、Dragen Graph对齐。</li>
+<li>使用DeepVariant和Dragen variant valler来检测SNPs和插入删除变异(<em>insert and deletions, indels</em>)。</li>
+<li>使用DeepTrio利用父母的数据帮助进行变异检测</li>
+</ul>
+<h3 id="研究结果">研究结果</h3>
+<ul>
+<li>泛基因组在小变异的检测中优于其他方法，SNPs和indels的数目都有所增加。
+<ul>
+<li>在GRCh38中错误区域和大的L1HS区域从泛基因组中获取的增益最多。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/image/20231205_reading/image-20231130095007981.png" alt="image-20231130095007981"></p>
+<h2 id="泛基因组变异资源">泛基因组变异资源</h2>
+<h3 id="目标">目标</h3>
+<p>创建一个社区，帮助开发基于泛基因组的群体遗传学分析方法</p>
+<h3 id="研究方法">研究方法</h3>
+<ul>
+<li>使用Giraffe将来自1KG中3202个样本的高质量短读数据比对到泛基因组上，使用DeepVariant来对小变异进行检测</li>
+</ul>
+<h3 id="研究结果">研究结果</h3>
+<ul>
+<li>在这些样本中的100个trios所表现出来的孟德尔一致性和GIAB真值集合中的一致。</li>
+<li>在不同的祖先中，与1KG目录相比，平均每个样本多出6.4万个变异，并为医学相关的基因座提供了AF估计。</li>
+</ul>
+<h2 id="sv基因分型">SV基因分型</h2>
+<h3 id="目标">目标</h3>
+<p>表明泛基因组在表示各种SV的多态性的表示能力。</p>
+<h3 id="6-3-2-对变异进行分类">6.3.2 对变异进行分类</h3>
+<ul>
+<li>使用PanGenie对MC中的bubble进行基因分型
+<ul>
+<li>检测出22133782个bubble分解为：201994117个SNP，6848115个indels，413809个SV</li>
+<li>参考中没有的SV等位基因中，17720个是双等位基因；296089个在至少一个非参考基因组中出现多个等位基因，甚至有在88个单倍体中均不一样的极端情况。</li>
+</ul>
+</li>
+</ul>
+<h3 id="分析基因分型的性能">分析基因分型的性能</h3>
+<p>分析基因分型的性能，设计了留一(<em>leave-one-out</em>)实验：</p>
+<ul>
+<li>反复从泛基因组图中删除一个样本，使用剩余的单倍型路径和被排除的样本的短read进行分析
+<ul>
+<li>在所有的类型和基因组的情况下，获得了高度的一致性。</li>
+</ul>
+</li>
+<li>使用PanGenie对HG002进行基因型分析
+<ul>
+<li>在一些具有挑战的医学相关位点中，SV基因型分析的准确度为0.74，召回率为0.81.</li>
+</ul>
+</li>
+</ul>
+<h3 id="生成高质量的过滤后的sv子集">生成高质量的过滤后的SV子集</h3>
+<h4 id="过滤">过滤</h4>
+<p>对3202个1KG样本进行SV的基因型调用，并使用机器学习方法对结果进行了过滤。</p>
+<ul>
+<li>产生了28434个del，84752个ins，26439个SV</li>
+<li>被过滤掉的基因多大多源于：过于复杂的多等位基因座，这部分中罕见等位基因数量较多</li>
+</ul>
+<h4 id="质量控制">质量控制</h4>
+<p>评估了Hard-Weinberg平衡值，统计了所有不相关的2504个样本基因型发现的AF和含有44个个体的图对应的AF进行对比。</p>
+<ul>
+<li>del、ins、SV的Pearson相关系数为0.96、0.93、0.90</li>
+</ul>
+<p>HPRC和HGSCV、1K Illumia calls进行数目上的比较</p>
+<ul>
+<li>使用Pangenie进行的HPRC效果更好，数目更多。比1K多104%，比HGSVC多34.8%</li>
+<li>在简单区域三个方式比较一致，在一些低可映射区域和重复区域泛基因组表现更好</li>
+</ul>
+<h2 id="改进串联重复区域的表示">改进串联重复区域的表示</h2>
+<p>VNTRs 是基因组中的一类序列，其特点是在基因组中重复出现，但重复的次数在个体之间可变。这使得在不同个体之间很难使用短读取进行准确的访问和测序。</p>
+<p>使用danbing-tk在泛基因组中对单倍体进行正交映射</p>
+<ul>
+<li>在TRF发现的VNTRs中，96.4%(94452/98021)个VNTRs被映射到单倍体上。</li>
+<li>相较于使用BWA-MEM对GRCh38进行的映射，未映射 reads 的比率降低了 6.6 到 8.5 倍。</li>
+<li>TN比GRCh38的高1.9%，TP比GRCh38高0.087%，FN降低了2.1倍。</li>
+<li>MV比GRCh38在80%的 VNTR 区域中表现更好，相关性系数*r^2^*从 0.58 提高到了 0.70。</li>
+</ul>
+<p>这表明图基因组的使用减少了映射过程中的映射错误或困难。此外，图基因组方法还提高了 VNTR 区域内长度变异的估计准确性。</p>
+<p><img src="/image/20231205_reading/image-20231130162347062.png" alt="image-20231130162347062"></p>
+<h2 id="改进rna序列映射">改进RNA序列映射</h2>
+<h3 id="方法">方法</h3>
+<p>模拟生成RNA测序数据(RNA-seq)，使用该数据在参考基因组和泛基因组上进行比较</p>
+<h3 id="实验结果">实验结果</h3>
+<ul>
+<li>和线性参考基因组vg mpmap或者STAR对比，泛基因组图的vg mpmap的误差显著更低</li>
+<li>泛基因组图在杂合变异位点上显示出更低的等位基因偏差，同时在这些位点上具有更高的映射覆盖率。</li>
+<li>真实数据缺乏真实标准，因此使用外显子覆盖率和独立的PacBio长读Iso-Seq数据
+<ul>
+<li>将其映射到MC导出的一个拼接泛基因组图中，其覆盖度最高，相关性也有所增加</li>
+</ul>
+</li>
+</ul>
+<h2 id="改进染色质免疫沉淀测序分析">改进染色质免疫沉淀测序分析</h2>
+<blockquote>
+<p>染色质(<em>chromatin</em>)：真核细胞分裂间期的细胞核内由DNA、组蛋白、非组蛋白及少量RNA组成的线性复合结构。<br>
+染色质免疫沉淀(<em>chromatin immunoprecipitation, ChIP</em>)：研究细胞内蛋白质与DNA相互作用的一种免疫沉淀实验技术。通过化学等方法，对蛋白质–DNA复合物进行沉淀，富集目的蛋白结合的DNA片段，进行纯化和检测。能真实、完整地反映结合在DNA序列上的调控蛋白。<br>
+染色质免疫沉淀测序(<em>chromatin immunoprecipitation sequencing, ChIP-seq</em>)：将染色质免疫沉淀与高通量测序技术相结合，可用于研究转录因子结合位点、组蛋白特异性修饰位点等。</p>
+</blockquote>
+<p>使用基因组对30个祖先为非洲或者欧洲的个体的巨噬细胞，进行ChIP-seq，利用转座酶研究染色质可接近性。</p>
+<blockquote>
+<p>染色质的可进入性(<em>chromatin accessibility</em>)：染色质打开，允许一些调控蛋白与之相结合的特质。<br>
+染色质开放性测序技术(<em>assay for transposase-accessible chromatin with high-throughput sequencing, ATAC-seq</em>)：</p>
+<ul>
+<li>DNA转座，是一种把DNA序列从染色体的一个区域搬运到另外一个区域的现象，由DNA转座酶(<em>transposase</em>)来实现。</li>
+<li>将已经被测序的DNA片段和转座酶复合物，加入到细胞核中，再利用已知序列的标签进行PCR后测序，就知道哪些区域是开放染色质了。</li>
+</ul>
+</blockquote>
+<ul>
+<li>使用MC图基因组进行重新分析时，峰值调用的数量净增加。平均而言，有2-3%的峰值仅在使用MC图基因组时才能够被检测到。</li>
+<li>新发现的峰值在比预期更多的样本、以超出随机情况的程度进行了表现。
+<ul>
+<li>这些峰值的发现不是偶然的，而是具有一定的重复性和稳定性。</li>
+</ul>
+</li>
+<li>检测到与GRCh38中不存在的结构变异（称为非参考SV）相关的表观遗传学特征</li>
+<li>部分SV峰值仅在欧洲血统中，部分仅在非洲血统中，部分均有。罕见等位基因富集在血统特异性事件中。</li>
+</ul>
+<h1 id="讨论">讨论</h1>
+<h2 id="贡献">贡献</h2>
+<h3 id="构建pangenome参考">构建pangenome参考</h3>
+<p>通过对47名个体进行长读长测序，作者构建了94个新的人类单倍体组装，并生成了pangenome参考，这为全基因组分析提供了更全面、准确的资源。</p>
+<h3 id="结构和基因组的准确性">结构和基因组的准确性</h3>
+<p>新的组装在基准准确性、N50连续性和结构准确性等方面优于先前的工作。作者采用新的流程验证了结构的准确性，结果显示99%以上的每个组装以及90%以上代表高度重复序列的组装序列是结构正确的。</p>
+<h3 id="pangenome在多个应用中的效益">pangenome在多个应用中的效益</h3>
+<p>作者展示了pangenome在改进基于参考的序列比对、变异检测、转录组学和表观遗传学等领域的效益。特别是在结构变异（SV）的检测方面，pangenome方法超越了先前的线性参考方法，提高了SV的检测率。</p>
+<h3 id="丰富的基因组学信息">丰富的基因组学信息</h3>
+<p>作者提供了94套Ensembl基因注释，涵盖了丰富的基因组学信息，使得可以进行基因组学、表观基因组学、转录组学等方面的深入研究。</p>
+<h2 id="挑战和讨论">挑战和讨论</h2>
+<h3 id="挑战和改进空间">挑战和改进空间</h3>
+<p>尽管取得了显著进展，但作者也指出了一些挑战：</p>
+<ul>
+<li>包括组装可靠性、基因定向错误、碱基水平测序错误等。</li>
+<li>作者计划通过扩展pangenome到更大的个体队列、提高结构准确性以及优化pangenome参考等方面来解决这些问题。</li>
+</ul>
+<h3 id="人类多样性的反映">人类多样性的反映</h3>
+<p>作者强调了在构建人类参考图谱时更广泛代表人类多样性的重要性，计划通过招募更多参与者来实现这一目标，以确保对各种人群的充分代表性。</p>
+<h3 id="未来应用的前景">未来应用的前景</h3>
+<p>作者认为pangenome参考将在未来的基因组学研究和临床实践中发挥关键作用，为疾病的预测、诊断和治疗提供更精确的信息，同时也为其他物种提供了有价值的方法。</p>
+<h1 id="reference">Reference</h1>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Cheng, H., Concepcion, G. T., Feng, X., Zhang, H. &amp; Li, H. Haplotype-resolved de novo assembly using phased assembly graphs with hifiasm. Nat. Methods 18, 170–175 (2021). <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>Cheng, H., Concepcion, G. T., Feng, X., Zhang, H. &amp; Li, H. Haplotype-resolved de novo assembly using phased assembly graphs with hifiasm. Nat. Methods 18, 170–175 (2021). <a href="#fnref2" class="footnote-backref">↩︎</a> <a href="#fnref2:1" class="footnote-backref">↩︎</a> <a href="#fnref2:2" class="footnote-backref">↩︎</a> <a href="#fnref2:3" class="footnote-backref">↩︎</a> <a href="#fnref2:4" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>Garg, S. Computational methods for chromosome-scale haplotype reconstruction. Genome Biol. 22, 101 (2021). 24. Garg, S. Pstools: a toolkit for fully phased sequences on chromosome level. GitHub <a target="_blank" rel="noopener" href="https://github.com/shilpagarg/pstools">https://github.com/shilpagarg/pstools</a> (2020). <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p>Jain, M., Koren, S., Miga, K. <em>et al.</em> Nanopore sequencing and assembly of a human genome with ultra-long reads. <em>Nat Biotechnol</em> <strong>36</strong>, 338–345 (2018). <a target="_blank" rel="noopener" href="https://doi.org/10.1038/nbt.4060">https://doi.org/10.1038/nbt.4060</a> <a href="#fnref4" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn5" class="footnote-item"><p>Li, H., Feng, X. &amp; Chu, C. The design and construction of reference pangenome graphs with minigraph. Genome Biol. 21, 265 (2020). 35. <a href="#fnref5" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn6" class="footnote-item"><p>Hickey, G. et al. Pangenome graph construction from genome alignment with MinigraphCactus. Preprint at bioRxiv <a target="_blank" rel="noopener" href="https://doi.org/10.1101/2022.10.06.511217">https://doi.org/10.1101/2022.10.06.511217</a> (2022). 36. <a href="#fnref6" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn7" class="footnote-item"><p>Garrison, E. et al. Building pangenome graphs. Preprint at bioRxiv <a target="_blank" rel="noopener" href="https://www.biorxiv">https://www.biorxiv</a>. org/content/10.1101/2023.04.05.535718v1 (2023). <a href="#fnref7" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn8" class="footnote-item"><p>Li, H. et al. A synthetic-diploid benchmark for accurate variant-calling evaluation. Nat. Methods 15, 595–597 (2018). <a href="#fnref8" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/bioinformatics/" rel="tag"># bioinformatics</a>
+              <a href="/tags/pangenome/" rel="tag"># pangenome</a>
+              <a href="/tags/minigraph/" rel="tag"># minigraph</a>
+              <a href="/tags/cactus/" rel="tag"># cactus</a>
+              <a href="/tags/PGGB/" rel="tag"># PGGB</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/02/Hexo_1/" rel="prev" title="Hexo搭建个人网站：一、下载安装和相关配置">
+      <i class="fa fa-chevron-left"></i> Hexo搭建个人网站：一、下载安装和相关配置
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E4%BD%9C%E8%80%85%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">主要作者信息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E5%90%8C%E4%B8%80%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">共同一作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E5%90%8C%E9%80%9A%E8%AE%AF"><span class="nav-number">1.2.</span> <span class="nav-text">共同通讯</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E7%9F%A5%E8%AF%86"><span class="nav-number">2.1.</span> <span class="nav-text">补充知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E5%9B%A0%E5%AE%9A%E7%9B%B8-genotype-phasing-%EF%BC%9A"><span class="nav-number">2.1.1.</span> <span class="nav-text">基因定相(Genotype Phasing)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E8%A3%85%E7%9A%84%E5%90%84%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-number">2.1.2.</span> <span class="nav-text">组装的各个阶段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E5%9F%BA%E5%9B%A0%E7%BB%84%E7%9A%84%E5%8F%91%E5%B1%95"><span class="nav-number">2.2.</span> <span class="nav-text">参考基因组的发展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#grch"><span class="nav-number">2.2.1.</span> <span class="nav-text">GRCh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#t2t-chm13"><span class="nav-number">2.2.2.</span> <span class="nav-text">T2T-CHM13</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hprc%E7%9A%84%E6%8F%90%E5%87%BA%E8%83%8C%E6%99%AF"><span class="nav-number">2.2.3.</span> <span class="nav-text">HPRC的提出背景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%BA%E7%B1%BB%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E8%8D%89%E6%A1%88"><span class="nav-number">2.3.</span> <span class="nav-text">人类泛基因组草案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#47%E4%B8%AA%E4%BA%BA%E7%B1%BB%E7%9A%84%E5%9F%BA%E5%9B%A0%E7%BB%84%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">47个人类的基因组装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BF%A1%E6%81%AF%E5%92%8C%E6%9D%A5%E6%BA%90"><span class="nav-number">3.1.</span> <span class="nav-text">数据信息和来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E7%BB%84%E8%A3%85%E7%9A%84%E8%AF%84%E4%BC%B0"><span class="nav-number">3.2.</span> <span class="nav-text">对组装的评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95-methods"><span class="nav-number">3.2.1.</span> <span class="nav-text">评估方法（Methods）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E9%87%8F%E6%9F%93%E8%89%B2%E4%BD%93%E9%97%B4%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">测量染色体间连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0contig%E8%B4%A8%E9%87%8F"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">评估contig质量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0qv"><span class="nav-number">3.2.1.3.</span> <span class="nav-text">评估QV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E5%AE%9A%E7%9B%B8%E8%AF%AF%E5%B7%AE"><span class="nav-number">3.2.1.4.</span> <span class="nav-text">计算定相误差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E6%A6%82%E8%BF%B0"><span class="nav-number">3.2.1.5.</span> <span class="nav-text">评估概述</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="nav-number">3.2.2.</span> <span class="nav-text">评估结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E5%9F%9F%E7%BB%84%E8%A3%85%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">3.3.</span> <span class="nav-text">区域组装可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#flagger%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1-methods"><span class="nav-number">3.3.1.</span> <span class="nav-text">Flagger方法设计（Methods）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="nav-number">3.3.2.</span> <span class="nav-text">评估结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E8%A3%85%E7%9A%84%E5%AE%8C%E6%95%B4%E6%80%A7%E5%92%8Ccnv"><span class="nav-number">3.4.</span> <span class="nav-text">组装的完整性和CNV</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95"><span class="nav-number">3.4.1.</span> <span class="nav-text">评估方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="nav-number">3.4.2.</span> <span class="nav-text">评估结果</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B947%E4%B8%AA%E5%9F%BA%E5%9B%A0%E7%BB%84%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8"><span class="nav-number">4.</span> <span class="nav-text">对47个基因组进行数据标注</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ensembl%E5%B7%A5%E5%85%B7%E8%AE%BE%E8%AE%A1-methods"><span class="nav-number">4.1.</span> <span class="nav-text">Ensembl工具设计（Methods）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E7%9A%84"><span class="nav-number">4.1.1.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.1.2.</span> <span class="nav-text">整体步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E5%8F%82%E8%80%83%E5%BA%8F%E5%88%97%E4%B8%AD%E5%AF%B9%E5%9F%BA%E5%9B%A0%E7%B0%87%E5%88%86%E7%B1%BB"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">在参考序列中对基因簇分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8grch38%E4%B8%AD%E6%AF%8F%E4%B8%AA%E5%9F%BA%E5%9B%A0%E7%B0%87%E5%88%9B%E5%BB%BA%E9%94%9A%E7%82%B9"><span class="nav-number">4.1.2.2.</span> <span class="nav-text">在GRCh38中每个基因簇创建锚点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E9%AB%98%E5%8F%AF%E4%BF%A1%E5%8C%BA%E5%9F%9F"><span class="nav-number">4.1.2.3.</span> <span class="nav-text">确定高可信区域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E9%AB%98%E5%8F%AF%E4%BF%A1%E5%8C%BA%E5%9F%9F%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90"><span class="nav-number">4.1.2.4.</span> <span class="nav-text">对高可信区域进行分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%BD%AC%E5%BD%95%E6%9C%AC%E8%BF%9B%E8%A1%8C%E8%AF%84%E4%BC%B0%E5%92%8C%E5%88%86%E6%9E%90"><span class="nav-number">4.1.2.5.</span> <span class="nav-text">对转录本进行评估和分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8E%9F%E5%A7%8B%E5%8F%82%E8%80%83%E8%AF%84%E4%BC%B0%E8%BD%AC%E5%BD%95%E7%89%A9%E6%98%A0%E5%B0%84%E8%B4%A8%E9%87%8F"><span class="nav-number">4.1.2.6.</span> <span class="nav-text">使用原始参考评估转录物映射质量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E6%B3%95%E5%AE%9A%E4%BD%8D%E7%9A%84%E5%9F%BA%E5%9B%A0"><span class="nav-number">4.1.2.7.</span> <span class="nav-text">无法定位的基因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E9%94%99%E8%AF%AF%E6%98%A0%E5%B0%84"><span class="nav-number">4.1.2.8.</span> <span class="nav-text">减少错误映射</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E6%B3%A8%E6%95%B4%E4%BD%93%E7%BB%93%E6%9E%9C"><span class="nav-number">4.2.</span> <span class="nav-text">标注整体结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A2%B1%E5%9F%BA%E7%BA%A7%E7%BB%93%E6%9E%9C"><span class="nav-number">4.3.</span> <span class="nav-text">碱基级结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1-methods"><span class="nav-number">4.3.1.</span> <span class="nav-text">方法设计（Methods）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E7%A0%81%E5%8F%98%E5%BC%82"><span class="nav-number">4.3.1.1.</span> <span class="nav-text">移码变异</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E4%B9%89%E7%AA%81%E5%8F%98"><span class="nav-number">4.3.1.2.</span> <span class="nav-text">无义突变</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8illumina%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E9%AA%8C%E8%AF%81"><span class="nav-number">4.3.1.3.</span> <span class="nav-text">使用Illumina数据进行验证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E7%AA%81%E5%8F%98%E7%9A%84%E7%BB%93%E6%9E%9C"><span class="nav-number">4.3.2.</span> <span class="nav-text">检测突变的结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E6%8B%B7%E8%B4%9D%E6%95%B0%E5%8F%98%E5%BC%82"><span class="nav-number">4.4.</span> <span class="nav-text">检测拷贝数变异</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E8%8D%89%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">构造泛基因组草案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E5%9B%BE%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">5.1.</span> <span class="nav-text">泛基因组图的结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E6%8F%8F%E8%BF%B0-methods"><span class="nav-number">5.2.</span> <span class="nav-text">构造方法描述（Methods）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#minigraph"><span class="nav-number">5.2.1.</span> <span class="nav-text">Minigraph</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E5%9B%BE%E6%AD%A5%E9%AA%A4"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">构图步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mc"><span class="nav-number">5.2.2.</span> <span class="nav-text">MC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%AE%E8%94%BD%E5%8D%AB%E6%98%9F%E5%8C%BA%E5%9F%9F"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">遮蔽卫星区域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E8%A3%85%E5%88%B0%E5%9B%BE%E6%98%A0%E5%B0%84"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">组装到图映射</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%93%E8%89%B2%E4%BD%93%E5%88%86%E8%A7%A3"><span class="nav-number">5.2.2.3.</span> <span class="nav-text">染色体分解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8cactus%E8%BF%9B%E8%A1%8C%E7%A2%B1%E5%9F%BA%E7%BA%A7%E5%88%AB%E6%AF%94%E5%AF%B9"><span class="nav-number">5.2.2.4.</span> <span class="nav-text">使用Cactus进行碱基级别比对</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8E%E5%A4%84%E7%90%86"><span class="nav-number">5.2.2.5.</span> <span class="nav-text">后处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pggb"><span class="nav-number">5.2.3.</span> <span class="nav-text">PGGB</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%94%E5%AF%B9"><span class="nav-number">5.2.3.1.</span> <span class="nav-text">比对</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BE%E8%AF%B1%E5%AF%BC"><span class="nav-number">5.2.3.2.</span> <span class="nav-text">图诱导</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BE%E5%BD%92%E4%B8%80"><span class="nav-number">5.2.3.3.</span> <span class="nav-text">图归一</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E9%87%8F%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E4%B8%AD%E7%9A%84%E5%8F%98%E5%BC%82"><span class="nav-number">5.3.</span> <span class="nav-text">测量泛基因组中的变异</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E8%BF%B0"><span class="nav-number">5.3.1.</span> <span class="nav-text">总述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E5%8F%AF%E4%BF%A1%E5%8C%BA%E5%9F%9F%E7%A1%AE%E5%AE%9A-method"><span class="nav-number">5.3.2.</span> <span class="nav-text">高可信区域确定（Method）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E5%BC%82%E7%9A%84%E6%95%B0%E7%9B%AE"><span class="nav-number">5.3.3.</span> <span class="nav-text">变异的数目</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%92%8C%E6%B5%8B%E9%87%8F%E6%96%B9%E6%B3%95-method"><span class="nav-number">5.3.3.1.</span> <span class="nav-text">统计和测量方法（Method)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%AF%8F%E4%B8%AA%E5%8F%AF%E4%BF%A1%E5%8F%98%E5%BC%82%E7%9A%84%E8%AF%84%E4%BC%B0"><span class="nav-number">5.3.3.2.</span> <span class="nav-text">对每个可信变异的评估</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%8F%82%E8%80%83%E6%95%B0%E6%8D%AE%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">5.3.4.</span> <span class="nav-text">非参考数据的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C"><span class="nav-number">5.3.4.1.</span> <span class="nav-text">分析结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E5%8F%98%E5%BC%82%E7%AD%89%E4%BD%8D%E5%9F%BA%E5%9B%A0%E9%A2%91%E7%8E%87%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90"><span class="nav-number">5.3.5.</span> <span class="nav-text">小变异等位基因频率整体分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%BC%A0%E7%BB%9F%E6%96%B9%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%8F%98%E5%BC%82%E8%B0%83%E5%88%86%E6%9E%90%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E7%9A%84%E8%B4%A8%E9%87%8F"><span class="nav-number">5.3.6.</span> <span class="nav-text">使用传统方法进行变异调分析泛基因组的质量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-method"><span class="nav-number">5.3.6.1.</span> <span class="nav-text">方法（Method）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">5.3.6.2.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%8E%9F%E5%A7%8B%E6%B5%8B%E5%BA%8F%E6%95%B0%E6%8D%AE%E6%9D%A5%E5%88%86%E6%9E%90%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E7%9A%84%E8%B4%A8%E9%87%8F"><span class="nav-number">5.3.7.</span> <span class="nav-text">利用原始测序数据来分析泛基因组的质量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.7.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">5.3.7.2.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E8%9B%8B%E7%99%BD%E7%9A%84%E6%B3%A8%E9%87%8A"><span class="nav-number">5.3.8.</span> <span class="nav-text">编码蛋白的注释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E8%A1%A8%E7%A4%BA%E7%9A%84%E5%A4%8D%E6%9D%82%E5%9F%BA%E5%9B%A0%E5%BA%A7"><span class="nav-number">5.4.</span> <span class="nav-text">泛基因组表示的复杂基因座</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%9B%E9%80%89"><span class="nav-number">5.4.1.</span> <span class="nav-text">筛选</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E5%9B%A0%E8%B7%9F%E8%B8%AA%E5%92%8C%E5%AE%9A%E4%BD%8D"><span class="nav-number">5.4.2.</span> <span class="nav-text">基因跟踪和定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C"><span class="nav-number">5.4.3.</span> <span class="nav-text">分析结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mc%E5%92%8Cpggb%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">5.4.4.</span> <span class="nav-text">MC和PGGB的区别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E5%BA%94%E7%94%A8"><span class="nav-number">6.</span> <span class="nav-text">泛基因组应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E7%9A%84%E7%9F%AD%E5%8F%98%E5%BC%82%E5%8F%91%E7%8E%B0"><span class="nav-number">6.1.</span> <span class="nav-text">基于泛基因组的短变异发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">6.1.1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E6%96%B9%E6%B3%95"><span class="nav-number">6.1.2.</span> <span class="nav-text">研究方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E7%BB%93%E6%9E%9C"><span class="nav-number">6.1.3.</span> <span class="nav-text">研究结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%9B%E5%9F%BA%E5%9B%A0%E7%BB%84%E5%8F%98%E5%BC%82%E8%B5%84%E6%BA%90"><span class="nav-number">6.2.</span> <span class="nav-text">泛基因组变异资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">6.2.1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E6%96%B9%E6%B3%95"><span class="nav-number">6.2.2.</span> <span class="nav-text">研究方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E7%BB%93%E6%9E%9C"><span class="nav-number">6.2.3.</span> <span class="nav-text">研究结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sv%E5%9F%BA%E5%9B%A0%E5%88%86%E5%9E%8B"><span class="nav-number">6.3.</span> <span class="nav-text">SV基因分型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">6.3.1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-2-%E5%AF%B9%E5%8F%98%E5%BC%82%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB"><span class="nav-number">6.3.2.</span> <span class="nav-text">6.3.2 对变异进行分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%9F%BA%E5%9B%A0%E5%88%86%E5%9E%8B%E7%9A%84%E6%80%A7%E8%83%BD"><span class="nav-number">6.3.3.</span> <span class="nav-text">分析基因分型的性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%AB%98%E8%B4%A8%E9%87%8F%E7%9A%84%E8%BF%87%E6%BB%A4%E5%90%8E%E7%9A%84sv%E5%AD%90%E9%9B%86"><span class="nav-number">6.3.4.</span> <span class="nav-text">生成高质量的过滤后的SV子集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4"><span class="nav-number">6.3.4.1.</span> <span class="nav-text">过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%A8%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">6.3.4.2.</span> <span class="nav-text">质量控制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E4%B8%B2%E8%81%94%E9%87%8D%E5%A4%8D%E5%8C%BA%E5%9F%9F%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">6.4.</span> <span class="nav-text">改进串联重复区域的表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9Brna%E5%BA%8F%E5%88%97%E6%98%A0%E5%B0%84"><span class="nav-number">6.5.</span> <span class="nav-text">改进RNA序列映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">6.5.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">6.5.2.</span> <span class="nav-text">实验结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E6%9F%93%E8%89%B2%E8%B4%A8%E5%85%8D%E7%96%AB%E6%B2%89%E6%B7%80%E6%B5%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="nav-number">6.6.</span> <span class="nav-text">改进染色质免疫沉淀测序分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A8%E8%AE%BA"><span class="nav-number">7.</span> <span class="nav-text">讨论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A1%E7%8C%AE"><span class="nav-number">7.1.</span> <span class="nav-text">贡献</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BApangenome%E5%8F%82%E8%80%83"><span class="nav-number">7.1.1.</span> <span class="nav-text">构建pangenome参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%92%8C%E5%9F%BA%E5%9B%A0%E7%BB%84%E7%9A%84%E5%87%86%E7%A1%AE%E6%80%A7"><span class="nav-number">7.1.2.</span> <span class="nav-text">结构和基因组的准确性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pangenome%E5%9C%A8%E5%A4%9A%E4%B8%AA%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E6%95%88%E7%9B%8A"><span class="nav-number">7.1.3.</span> <span class="nav-text">pangenome在多个应用中的效益</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B0%E5%AF%8C%E7%9A%84%E5%9F%BA%E5%9B%A0%E7%BB%84%E5%AD%A6%E4%BF%A1%E6%81%AF"><span class="nav-number">7.1.4.</span> <span class="nav-text">丰富的基因组学信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%92%8C%E8%AE%A8%E8%AE%BA"><span class="nav-number">7.2.</span> <span class="nav-text">挑战和讨论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%92%8C%E6%94%B9%E8%BF%9B%E7%A9%BA%E9%97%B4"><span class="nav-number">7.2.1.</span> <span class="nav-text">挑战和改进空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%BA%E7%B1%BB%E5%A4%9A%E6%A0%B7%E6%80%A7%E7%9A%84%E5%8F%8D%E6%98%A0"><span class="nav-number">7.2.2.</span> <span class="nav-text">人类多样性的反映</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AA%E6%9D%A5%E5%BA%94%E7%94%A8%E7%9A%84%E5%89%8D%E6%99%AF"><span class="nav-number">7.2.3.</span> <span class="nav-text">未来应用的前景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">8.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Grampart</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Grampart</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">13k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
